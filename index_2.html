@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#f7c9a9" />
+  <title>Talk to me!</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="sparkles" aria-hidden="true"></div>
+  <canvas id="scene"></canvas>
+
+  <div id="loading">Loading…</div>
+
+  <div id="bubble" role="status"></div>
+
+  <div id="picker" class="picker"></div>
+
+  <div class="ui">
+    <div id="status">Tap the mic 🎤</div>
+    <div class="row">
+      <button id="settingsBtn" class="round small" aria-label="Voice settings">⚙️</button>
+      <button id="mic" class="round big" aria-label="Talk to her">🎤</button>
+      <span class="spacer"></span>
+    </div>
+  </div>
+
+  <div id="settings" class="settings">
+    <label for="pitch">Voice pitch</label>
+    <input id="pitch" type="range" />
+    <div class="hint"><span>kid</span><span>chipmunk</span></div>
+  </div>
+
+  <div id="startWrap" class="startWrap">
+    <button id="start">Tap to meet her 💖</button>
+  </div>
+
+  <script>
+    // friendly message if the 3D engine can't load (e.g. offline)
+    function fail() {
+      var el = document.getElementById('loading');
+      if (el && !window.__dollReady) el.textContent = 'Couldn\'t load the 3D engine. Check your internet connection and refresh.';
+    }
+    window.addEventListener('error', fail, true);
+    window.addEventListener('unhandledrejection', fail);
+    setTimeout(fail, 12000);
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

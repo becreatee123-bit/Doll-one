@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { CONFIG } from './config.js';
-import { CHARACTERS } from './index.js';
+import { CHARACTERS } from './characters/index.js';
 import { Behavior } from './behavior.js';
 import { Sfx } from './sfx.js';
 import { VoiceEngine } from './voice.js';

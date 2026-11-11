@@ -16,12 +16,12 @@
 const TAU = Math.PI * 2;
 
 export const GIRL_DEFAULTS = {
-  skin: 0xe3a87d,
-  skinShade: 0xd09169,
+  skin: 0xd99a6c,
+  skinShade: 0xc58455,
   hair: 0x1a1312,
-  lips: 0xe8607c,
+  lips: 0xcf5468,
   nails: 0xc8242c,
-  iris: 0x4a2a1a,
+  iris: 0x3a2217,
   gold: 0xe3b23c,
   baseColor: 0xf4b400,
   dress: {
@@ -229,8 +229,7 @@ export function createGirl(THREE, options = {}) {
 
   // ---------------------------------------------------------- materials ----
   const mSkin = new THREE.MeshPhysicalMaterial({
-    color: o.skin, roughness: 0.4, clearcoat: 0.35, clearcoatRoughness: 0.35,
-    emissive: 0x5a2a1c, emissiveIntensity: 0.3,
+    color: o.skin, roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.35,
   });
   const mSkinDeep = new THREE.MeshStandardMaterial({ color: o.skinShade, roughness: 0.5 });
   const mHair = new THREE.MeshPhysicalMaterial({
@@ -238,19 +237,13 @@ export function createGirl(THREE, options = {}) {
   });
   const mHairCap = mHair.clone();
   mHairCap.side = THREE.DoubleSide;
-  const mLip = new THREE.MeshPhysicalMaterial({ color: o.lips, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1 });
+  const mLip = new THREE.MeshPhysicalMaterial({ color: o.lips, roughness: 0.28, clearcoat: 1 });
   const mDark = new THREE.MeshStandardMaterial({ color: 0x1a0e0b, roughness: 0.4 });
   const mMouth = new THREE.MeshStandardMaterial({ color: 0x4a1218, roughness: 0.6 });
   const mTongue = new THREE.MeshStandardMaterial({ color: 0xd9667a, roughness: 0.5 });
   const mWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25 });
   const mIris = new THREE.MeshStandardMaterial({ color: o.iris, roughness: 0.3 });
-  const mIris2 = new THREE.MeshStandardMaterial({ color: 0x8a5230, roughness: 0.3 });
-  const mIrisGlow = new THREE.MeshStandardMaterial({ color: 0xb8793f, roughness: 0.3 });
-  const mBrow = new THREE.MeshStandardMaterial({ color: 0x2a1a15, roughness: 0.5 });
-  const mGloss = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 });
-  const mShadow = new THREE.MeshBasicMaterial({
-    color: 0xe6808a, transparent: true, opacity: 0.28, depthWrite: false,
-  });
+  const mIris2 = new THREE.MeshStandardMaterial({ color: 0x6b3e22, roughness: 0.3 });
   const mGold = new THREE.MeshStandardMaterial({ color: o.gold, roughness: 0.22, metalness: 0.9 });
   const mNail = new THREE.MeshPhysicalMaterial({ color: o.nails, roughness: 0.2, clearcoat: 1 });
   const mBase = new THREE.MeshPhysicalMaterial({
@@ -261,7 +254,7 @@ export function createGirl(THREE, options = {}) {
     sheenColor: new THREE.Color(0xffd9a0), sheenRoughness: 0.5, side: THREE.DoubleSide,
   });
   const mBlush = new THREE.MeshBasicMaterial({
-    color: 0xff7f8e, transparent: true, opacity: 0.3, depthWrite: false,
+    color: 0xff6f7d, transparent: true, opacity: 0.2, depthWrite: false,
   });
 
   // -------------------------------------------------------------- root -----
@@ -377,14 +370,14 @@ export function createGirl(THREE, options = {}) {
   B.add(head.p);
   const H = head.c; // absolute coordinates inside here too
 
-  // skull with a soft, rounded chin
+  // skull with a pointy chin
   const skullData = sphereData(56, 40, Math.PI, (x, y, z) => {
     let sx = 1;
     let sz = 1;
     if (y < 0) {
       const t = Math.pow(-y, 1.3);
-      sx = 1 - 0.2 * t;
-      sz = 1 - 0.12 * t;
+      sx = 1 - 0.32 * t;
+      sz = 1 - 0.2 * t;
     }
     return [HC.x + x * HR.x * sx, HC.y + y * HR.y, HC.z + z * HR.z * sz];
   });
@@ -397,8 +390,8 @@ export function createGirl(THREE, options = {}) {
     let sz = 1;
     if (dy < 0) {
       const t = Math.pow(-dy, 1.3);
-      sx = 1 - 0.2 * t;
-      sz = 1 - 0.12 * t;
+      sx = 1 - 0.32 * t;
+      sz = 1 - 0.2 * t;
     }
     const q = 1 - Math.pow((x - HC.x) / (HR.x * sx), 2) - dy * dy;
     return HC.z + HR.z * sz * Math.sqrt(Math.max(q, 0));
@@ -426,86 +419,66 @@ export function createGirl(THREE, options = {}) {
   }
 
   // nose + cheeks
-  const nose = ell(0.048, 0.038, 0.045, mSkin, 'head', 14);
-  placeOnFace(nose, 0, 2.86, 0.01);
+  const nose = ell(0.065, 0.055, 0.06, mSkinDeep, 'head', 14);
+  placeOnFace(nose, 0, 2.93, 0.02);
   H.add(nose);
 
   const blushes = [];
   for (const sx of [-1, 1]) {
-    const b = ell(0.2, 0.125, 0.03, mBlush, 'head', 14);
+    const b = ell(0.17, 0.11, 0.03, mBlush, 'head', 14);
     b.castShadow = false;
-    placeOnFace(b, sx * 0.52, 2.8, 0.0);
+    placeOnFace(b, sx * 0.5, 2.86, 0.0);
     H.add(b);
     blushes.push(b);
   }
 
   // ---- eyes
-  const BROW_Y = 0.35;
   const eyeRigs = [];
   function buildEye(sx) {
     const eye = new THREE.Group();
     const open = new THREE.Group();
     eye.add(open);
-    open.add(ell(0.23, 0.2, 0.08, mWhite, 'head', 24));
+    open.add(ell(0.2, 0.24, 0.08, mWhite, 'head', 24));
     const iris = new THREE.Group();
-    iris.position.y = 0.0;
-    const ir = ell(0.165, 0.168, 0.05, mIris, 'head', 24);
-    ir.position.set(0, 0.01, 0.05);
-    const ir2 = ell(0.125, 0.128, 0.04, mIris2, 'head', 20);
-    ir2.position.set(0, 0.0, 0.062);
-    const glow = ell(0.1, 0.045, 0.03, mIrisGlow, 'head', 14);
-    glow.position.set(0, -0.085, 0.07);
-    const pupil = ell(0.08, 0.088, 0.03, mDark, 'head', 16);
-    pupil.position.set(0, 0.01, 0.078);
-    const hl1 = ell(0.055, 0.062, 0.02, mWhite, 'head', 12);
-    hl1.position.set(-0.05, 0.075, 0.112);
-    const hl2 = ell(0.028, 0.03, 0.02, mWhite, 'head', 10);
-    hl2.position.set(0.06, -0.055, 0.112);
-    const hl3 = ell(0.016, 0.016, 0.02, mWhite, 'head', 8);
-    hl3.position.set(0.015, 0.0, 0.112);
-    iris.add(ir, ir2, glow, pupil, hl1, hl2, hl3);
+    const ir = ell(0.148, 0.175, 0.05, mIris, 'head', 24);
+    ir.position.z = 0.05;
+    const ir2 = ell(0.105, 0.125, 0.04, mIris2, 'head', 20);
+    ir2.position.z = 0.062;
+    const pupil = ell(0.07, 0.085, 0.03, mDark, 'head', 16);
+    pupil.position.z = 0.078;
+    const hl1 = ell(0.04, 0.045, 0.02, mWhite, 'head', 10);
+    hl1.position.set(-0.04, 0.07, 0.105);
+    const hl2 = ell(0.02, 0.022, 0.02, mWhite, 'head', 8);
+    hl2.position.set(0.05, -0.06, 0.105);
+    iris.add(ir, ir2, pupil, hl1, hl2);
     open.add(iris);
-    // upper lash line, bold and lifted into a little wing at the outer corner
+    // upper lash line with a little wing on the outer corner
     const lash = curveTube(
-      [V(-sx * 0.23, -0.01, 0.07), V(-sx * 0.19, 0.12, 0.08), V(-sx * 0.08, 0.195, 0.085),
-       V(sx * 0.06, 0.21, 0.085), V(sx * 0.18, 0.155, 0.08), V(sx * 0.255, 0.09, 0.07),
-       V(sx * 0.33, 0.135, 0.06)],
-      0.032, mDark, 'head'
+      [V(-sx * 0.2, 0.0, 0.07), V(-sx * 0.17, 0.17, 0.08), V(-sx * 0.05, 0.25, 0.085),
+       V(sx * 0.1, 0.255, 0.085), V(sx * 0.21, 0.15, 0.075), V(sx * 0.29, 0.1, 0.06)],
+      0.03, mDark, 'head'
     );
     open.add(lash);
-    // two small extra lashes at the outer corner
-    for (const [dx, dy, ex, ey] of [[0.14, 0.185, 0.2, 0.275], [0.2, 0.15, 0.285, 0.215]]) {
-      open.add(curveTube(
-        [V(sx * dx, dy, 0.08), V(sx * (dx + ex) / 2, (dy + ey) / 2 + 0.03, 0.08), V(sx * ex, ey, 0.075)],
-        0.014, mDark, 'head'
-      ));
-    }
     // closed-eye arc (shown while blinking)
     const closedPivot = new THREE.Group();
     const closed = curveTube(
-      [V(-0.22, 0.02, 0.07), V(-0.1, -0.05, 0.08), V(0.1, -0.05, 0.08), V(0.22, 0.02, 0.07), V(sx * 0.3, 0.08, 0.06)],
+      [V(-0.2, 0.02, 0.07), V(-0.1, -0.05, 0.08), V(0.1, -0.05, 0.08), V(0.2, 0.02, 0.07), V(sx * 0.28, 0.07, 0.06)],
       0.03, mDark, 'head'
     );
     closedPivot.add(closed);
     closedPivot.visible = false;
     eye.add(closedPivot);
-    // soft pink eyeshadow above the eye
-    const shadow = ell(0.22, 0.075, 0.02, mShadow, 'head', 14);
-    shadow.castShadow = false;
-    shadow.position.set(0, 0.22, 0.03);
-    eye.add(shadow);
-    // eyebrow: thin, soft arch
+    // eyebrow
     const brow = new THREE.Group();
     const browMesh = curveTube(
-      [V(-sx * 0.2, -0.005, 0.0), V(-sx * 0.09, 0.04, 0.0), V(sx * 0.05, 0.07, 0.0),
-       V(sx * 0.17, 0.05, 0.0), V(sx * 0.25, -0.005, 0.0)],
-      0.014, mBrow, 'head'
+      [V(-sx * 0.2, 0.0, 0.0), V(-sx * 0.08, 0.06, 0.0), V(sx * 0.08, 0.075, 0.0), V(sx * 0.22, 0.02, 0.0)],
+      0.022, mDark, 'head'
     );
     brow.add(browMesh);
-    brow.position.set(0, BROW_Y, 0.04);
+    brow.position.set(0, 0.4, 0.04);
     eye.add(brow);
 
-    placeOnFace(eye, sx * 0.4, 3.08, 0.015);
+    placeOnFace(eye, sx * 0.37, 3.12, 0.005);
     H.add(eye);
     return { eye, open, iris, closedPivot, brow, sx };
   }
@@ -514,15 +487,10 @@ export function createGirl(THREE, options = {}) {
   // ---- mouth
   const mouth = new THREE.Group();
   const lipZ = (x) => -0.64 * x * x;
-  const upperPts = [-0.16, -0.08, 0, 0.08, 0.16].map((x, i) => V(x, [0.03, 0.044, 0.028, 0.044, 0.03][i], lipZ(x)));
-  const lowerPts = [-0.16, -0.08, 0, 0.08, 0.16].map((x, i) => V(x, [0.03, -0.028, -0.046, -0.028, 0.03][i], lipZ(x)));
-  const upperLip = curveTube(upperPts, 0.03, mLip, 'face');
-  const lowerLip = curveTube(lowerPts, 0.037, mLip, 'face');
-  // little shine on the lower lip
-  const gloss = ell(0.032, 0.009, 0.008, mGloss, 'face', 10);
-  gloss.castShadow = false;
-  gloss.position.set(-0.04, -0.043, lipZ(-0.04) + 0.034);
-  lowerLip.add(gloss);
+  const upperPts = [-0.17, -0.085, 0, 0.085, 0.17].map((x, i) => V(x, [0.012, 0.045, 0.028, 0.045, 0.012][i], lipZ(x)));
+  const lowerPts = [-0.15, -0.075, 0, 0.075, 0.15].map((x, i) => V(x, [0.0, -0.035, -0.045, -0.035, 0.0][i], lipZ(x)));
+  const upperLip = curveTube(upperPts, 0.028, mLip, 'face');
+  const lowerLip = curveTube(lowerPts, 0.033, mLip, 'face');
   const inner = ell(0.15, 0.03, 0.02, mMouth, 'face', 16);
   inner.position.set(0, -0.005, -0.012);
   const teeth = ell(0.1, 0.02, 0.012, mWhite, 'face', 12);
@@ -530,7 +498,7 @@ export function createGirl(THREE, options = {}) {
   const tongue = ell(0.075, 0.03, 0.012, mTongue, 'face', 12);
   tongue.position.set(0, -0.02, -0.004);
   mouth.add(inner, teeth, tongue, upperLip, lowerLip);
-  placeOnFace(mouth, 0, 2.63, 0.012);
+  placeOnFace(mouth, 0, 2.66, 0.012);
   H.add(mouth);
 
   // ---- hair
@@ -539,8 +507,8 @@ export function createGirl(THREE, options = {}) {
 
   // cap: big shell around the skull with the face window cut out
   const CAP = { c: V(0, 3.3, -0.08), rx: 1.0, ry: 1.04, rz: 1.03 };
-  const hairlineY = (x) => 3.8 - 0.52 * Math.pow(Math.min(1, Math.abs(x) / 0.9), 1.45);
-  let capData = sphereData(160, 120, 2.35, (x, y, z) => [
+  const hairlineY = (x) => 3.88 - 0.55 * Math.pow(Math.min(1, Math.abs(x) / 0.9), 1.6);
+  let capData = sphereData(56, 40, 2.35, (x, y, z) => [
     CAP.c.x + x * CAP.rx, CAP.c.y + y * CAP.ry, CAP.c.z + z * CAP.rz,
   ]);
   capData = filterTriangles(capData, (cx, cy, cz) => {
@@ -555,17 +523,6 @@ export function createGirl(THREE, options = {}) {
     const dy = (y - CAP.c.y) / CAP.ry;
     const q = 1 - (x / CAP.rx) * (x / CAP.rx) - dy * dy;
     return CAP.c.z + CAP.rz * Math.sqrt(Math.max(q, 0));
-  }
-
-  // smooth rounded hair edge along the hairline (hides any stair-steps), split at the centre part
-  for (const sx of [-1, 1]) {
-    const edge = [];
-    for (let i = 0; i <= 40; i++) {
-      const x = sx * (0.035 + (i / 40) * 0.72);
-      const y = hairlineY(x) + 0.03;
-      edge.push(V(x, y, capZ(x, y) + 0.01));
-    }
-    hairLayer.add(curveTube(edge, 0.05, mHair, 'hair'));
   }
 
   function wavy(pts, amp, freq, phase, sx) {
@@ -672,7 +629,7 @@ export function createGirl(THREE, options = {}) {
     setLook(x, y) {
       state.look = [x, y];
       for (const e of eyeRigs) {
-        e.iris.position.set(x * 0.05, y * 0.03, 0);
+        e.iris.position.set(x * 0.05, y * 0.05, 0);
       }
     },
 
@@ -680,13 +637,13 @@ export function createGirl(THREE, options = {}) {
     setBrows(raise, tilt = 0) {
       state.brow = raise;
       for (const e of eyeRigs) {
-        e.brow.position.y = BROW_Y + raise * 0.1;
+        e.brow.position.y = 0.4 + raise * 0.1;
         e.brow.rotation.z = e.sx * tilt * 0.25;
       }
     },
 
     setBlush(v) {
-      mBlush.opacity = Math.max(0, Math.min(0.75, v * 1.25));
+      mBlush.opacity = Math.max(0, Math.min(1, v));
     },
 
     // pitch (+ = look down), yaw (+ = turn to viewer's right), roll (+ = tilt to viewer's right)
@@ -726,7 +683,7 @@ export function createGirl(THREE, options = {}) {
   rig.setBlink(0);
   rig.setLook(0.35, 0.05);
   rig.setBrows(0, 0);
-  rig.setBlush(0.22);
+  rig.setBlush(0.2);
   rig.setBody({});
   return rig;
 }
